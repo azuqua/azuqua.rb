@@ -1,4 +1,57 @@
-azuqua.rb
-=========
+<h1>Azuqua Client Rubygem</h1>
+<p>
+	This library provides an easy interface for interacting with your Azuqua flos.
+	The Azuqua API is directly exposed to developers should you wish to write your own library.
+	For full API documentation please visit <a href="//developer.azuqua.com">developer.azuqua.com</a>.
+</p>
+<p>
+	Installation:
+	<pre> gem install azuqua </pre>
+</p>
+<p>
+	In order to make API requests you will need both your accessKey and accessSecret.
+	These can also be found on your account information page. 
+</p>
+<h1>Usage</h1>
+<pre>
+	require "azuqua"
+	
+	# pass in your credentials directly
+	Azuqua.config("accessKey", "accessSecret")
 
-Ruby gem for invoking Flõs on Azuqua
+	# or load them from a .json file
+	Azuqua.loadConfig("path/to/file.json")
+
+	# get all your flos
+	# note: this caches your flos locally and any subsequent calls to Flo.list will return the cache
+	# to refresh the cache provide a truthy first parameter
+	# e.g. Azuqua::Flo.list(true)
+	flos = Azuqua::Flo.list
+
+	# invoke all of them
+	flos.each do |flo|
+		p flo.invoke({ a: 1 })
+	end
+
+</pre>
+<hr>
+<h1>LICENSE - "MIT License"</h1>
+Copyright (c) 2014 Azuqua
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
