@@ -20,6 +20,7 @@
 	Azuqua.config("accessKey", "accessSecret")
 
 	# or load them from a .json file
+	# see account.json for an example file (those aren't real credentials...)
 	Azuqua.loadConfig("path/to/file.json")
 
 	# get all your flos
@@ -30,6 +31,7 @@
 
 	# invoke all of them
 	flos.each do |flo|
+		p "Invoking " + flo.name
 		p flo.invoke({ a: 1 })
 	end
 
