@@ -1,6 +1,6 @@
 <h1>Azuqua Client Rubygem</h1>
 <p>
-	This library provides an easy interface for interacting with your Azuqua flos.
+	This library provides an interface for interacting with your Azuqua flos.
 	The Azuqua API is directly exposed to developers should you wish to write your own library.
 	For full API documentation please visit <a href="//developer.azuqua.com">developer.azuqua.com</a>.
 </p>
@@ -9,8 +9,8 @@
 	<pre> gem install azuqua </pre>
 </p>
 <p>
-	In order to make API requests you will need both your accessKey and accessSecret.
-	These can also be found on your account information page. 
+	In order to make API requests you will need your accessKey and accessSecret.
+	These can be found on your account information page. 
 </p>
 <h1>Usage</h1>
 <pre>
@@ -20,14 +20,15 @@
 	Azuqua.config("accessKey", "accessSecret")
 
 	# or load them from a .json file
-	# see account.json for an example file (those aren't real credentials...)
+	# see account.json for an example file
 	Azuqua.loadConfig("path/to/file.json")
 
 	# get all your flos
 	# note: this caches your flos locally and any subsequent calls to Flo.list will return the cache
-	# to refresh the cache provide a truthy first parameter
-	# e.g. Azuqua::Flo.list(true)
 	flos = Azuqua::Flo.list
+
+	# to refresh the cache provide a truthy first parameter
+	Azuqua::Flo.list(true)
 
 	# invoke all of them
 	flos.each do |flo|
