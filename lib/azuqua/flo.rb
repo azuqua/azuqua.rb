@@ -75,7 +75,7 @@ class Flo
 			headers["Content-Length"] = body.bytesize.to_s
 		end
 		uri = URI.parse(HTTP_OPTIONS[:host] + _path)
-		https = Net::HTTP.new(uri.host, uri.port)
+		https = Net::HTTP.new(uri)
 		https.use_ssl = true
 		if _verb == "get"
 			req = Net::HTTP::Get.new(uri.path, headers)
@@ -84,10 +84,16 @@ class Flo
 			req.body = body
 		end
 		res = https.request(req)
-		code = res.code.to_i
-		case code
-			when 200 then JSON.parse(res.body)
-			when 400..599 then raise JSON.parse(res.body)["error"]
+		begin
+			res.body = JSON.parse(res.body)
+		rescue
+			raise "Error processing request " + res.body.to_s
+		else
+			res.code = res.code.to_i
+			case res.code
+				when 200 then res.body
+				when 400..599 then raise res.body["error"]
+			end
 		end
 	end
 
