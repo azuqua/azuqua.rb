@@ -63,7 +63,7 @@ class Flo
 
 	def self.request _path, _verb, _data
 		_data = "" if _data.nil? || _data.empty?
-		headers = HTTP_OPTIONS[:headers]
+		headers = HTTP_OPTIONS[:headers].dup
 		timestamp = Time.now.utc.iso8601
 		headers["x-api-timestamp"] = timestamp
 		headers["x-api-accessKey"] = self.account[:accessKey]
