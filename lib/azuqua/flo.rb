@@ -20,7 +20,7 @@ class Flo
 	}
 
 	HTTP_OPTIONS = {
-		:host => "https://api.azuqua.com",
+		:host => "https://api.azuqua.com", 
 		:headers => {
 			"Content-Type" => "application/json"
 		}
@@ -75,7 +75,7 @@ class Flo
 			headers["Content-Length"] = body.bytesize.to_s
 		end
 		uri = URI.parse(HTTP_OPTIONS[:host] + _path)
-		https = Net::HTTP.new(uri)
+		https = Net::HTTP.new(uri.host, uri.port)
 		https.use_ssl = true
 		if _verb == "get"
 			req = Net::HTTP::Get.new(uri.path, headers)
@@ -89,8 +89,8 @@ class Flo
 		rescue
 			raise "Error processing request " + res.body.to_s
 		else
-			res.code = res.code.to_i
-			case res.code
+			code = res.code.to_i
+			case code
 				when 200 then res.body
 				when 400..599 then raise res.body["error"]
 			end
