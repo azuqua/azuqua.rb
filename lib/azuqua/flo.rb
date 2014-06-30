@@ -10,11 +10,11 @@ class Flo
 
 	ROUTES = {
 		:invoke => {
-			:path => "/api/flo/:id/invoke",
+			:path => "/flo/:id/invoke",
 			:method => "post"
 		},
 		:list => {
-			:path => "/api/account/flos",
+			:path => "/account/flos",
 			:method => "get"
 		}
 	}
@@ -69,7 +69,7 @@ class Flo
 		headers["x-api-accessKey"] = self.account[:accessKey]
 		headers["x-api-hash"] = self.sign_data(self.account[:accessSecret], _data, _verb, _path, timestamp)
 		if _verb == "get" && _data.is_a?(Hash)
-			_path = _data.inject(_path) { |s, c| add_get_parameter(s, c[0], c[1]) }
+			_path += URI.encode_www_form(_data)
 		elsif _verb == "post"
 			body = _data.to_json
 			headers["Content-Length"] = body.bytesize.to_s
