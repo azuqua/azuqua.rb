@@ -6,7 +6,6 @@ require "openssl"
 require "net/https"
 require "net/http"
 require "uri"
-require File.expand_path("../azuqua/flo", __FILE__)
 require File.expand_path("../azuqua/org", __FILE__)
 
 module Azuqua
@@ -16,20 +15,13 @@ module Azuqua
 			:method => "post"
 		}
 	}
-	# HTTP_OPTIONS = {
-		# :host => "https://api.azuqua.com", 
-		# :headers => {
-		# 	"Content-Type" => "application/json"
-		# }
-	# }
+
 	HTTP_OPTIONS = {
-		:host => "http://localhost.azuqua.com:6072", 
+		:host => "https://api.azuqua.com", 
 		:headers => {
 			"Content-Type" => "application/json"
-		}		
+		}
 	}
-
-	Flo = ::Flo
 
 	@@accessKey = nil
 	@@accessSecret = nil
