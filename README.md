@@ -9,33 +9,48 @@
 	<pre> gem install azuqua </pre>
 </p>
 <p>
-	In order to make API requests you will need your accessKey and accessSecret.
+	In order to make API requests you will need your accessKey and accessSecret to your org.
 	These can be found on your account information page. 
+
+	You can also access your flos via your username and password. This method gives you access to all of your associated orgs in addition to each org's flos.
 </p>
 <h1>Usage</h1>
 <pre>
-	require "azuqua"
-	
-	# pass in your credentials directly
-	Azuqua.config("accessKey", "accessSecret")
+	require './lib/azuqua.rb'
+	require './lib/azuqua/flo.rb'
+	require './lib/azuqua/org.rb'
 
-	# or load them from a .json file
-	# see account.json for an example file
-	Azuqua.loadConfig("path/to/file.json")
+	# Grab key, secret, email, and password from the environment variables.
+	key = ENV["ACCESS_KEY"]
+	secret = ENV["ACCESS_SECRET"]
 
-	# get all your flos
-	# note: this caches your flos locally and any subsequent calls to Flo.list will return the cache
-	flos = Azuqua::Flo.list
+	email = ENV["AZUQUA_EMAIL"]
+	password = ENV["AZUQUA_PASSWORD"]
 
-	# to refresh the cache provide a truthy first parameter
-	Azuqua::Flo.list(true)
-
-	# invoke all of them
-	flos.each do |flo|
-		p "Invoking " + flo.name
-		p flo.invoke({ a: 1 })
+	# Login with your username and password. Returns a list of Org objects.
+	orgs = Azuqua.login email, password
+	orgs.each do  |org|
+		org.flos(true).each do |flo| 
+			p flo.read
+			p flo.disable
+			p flo.enable
+			p flo.alias
+			p flo.invoke '{"a":"test data"}'
+		end
 	end
 
+	# Create a new org object with the org name, key and secret.
+	org = Org.new 'Org Name', key, secret
+	org.flos(true).each do |flo| 
+		p flo.read
+		p flo.disable
+		p flo.enable
+		p flo.alias
+		p flo.invoke '{"a":"test data"}'
+	end
+
+	# Use loadConfig static method to load name, key and secret. The loadConfig method returns a new Org object.
+	org = Org.loadConfig("path/to/file.json")
 </pre>
 <hr>
 <h1>LICENSE - "MIT License"</h1>
