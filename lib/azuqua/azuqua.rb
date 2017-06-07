@@ -22,7 +22,7 @@ class Azuqua
     raise "Invalid account credentials" unless @accessKey && @accessSecret
   end
 
-  def self.fromConfig(path)
+  def self.from_config(path)
     open(path, "r") do |file|
       data = JSON.parse(file.read)
       accessKey = data["accessKey"]
@@ -31,7 +31,7 @@ class Azuqua
     end
   end
 
-  def self.fromEnv()
+  def self.from_env()
       accessKey = ENV["AZUQUA_ACCESS_KEY"]
       accessSecret = ENV["AZUQUA_ACCESS_SECRET"]
       Azuqua.new(accessKey, accessSecret)
@@ -75,7 +75,6 @@ class Azuqua
     headers["x-api-accessKey"] = @accessKey
     headers["x-api-hash"] = Azuqua.sign_data(@accessSecret, path, verb, data, timestamp)
     headers["Content-Type"] = "application/json"
-    puts headers
 
     uri = URI.parse(HTTP_OPTIONS[:host] + path)
     https = Net::HTTP.new(uri.host, uri.port)
@@ -109,7 +108,6 @@ class Azuqua
       data = data.to_json
     end
     meta = [verb.downcase, path, timestamp].join(":") + data
-    puts meta
     OpenSSL::HMAC.hexdigest("sha256", secret, meta)
   end
 

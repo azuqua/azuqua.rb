@@ -6,10 +6,10 @@ RSpec.describe Azuqua, "#invoke" do
     it "invokes some flos without raising an exception" do
       # Load accessKey & accessSecret via environment variables
       # Checks for variables `AZUQUA_ACCESS_KEY` and `AZUQUA_ACCESS_SECRET` respectivly
-      azuqua = Azuqua.fromEnv()
+      azuqua = Azuqua.from_env()
 
       #Alternativly to load from a JSON file with { accessKey: '', accessSecret: '' }
-      # azuqua = Azuqua.fromConfig([PATH])
+      # azuqua = Azuqua.from_config([PATH])
 
       # OR - call initialize new azuqua passing in key and secret to constructor
       # azuqua = Azuqua.new([KEY], [SECRET])
