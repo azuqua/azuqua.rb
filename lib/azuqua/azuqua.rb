@@ -7,7 +7,7 @@ require "uri"
 
 class Azuqua
 	HTTP_OPTIONS = {
-		:host => "https://alphaapi.azuqua.com", 
+		:host => "https://api.azuqua.com", 
 		:headers => {
 			"Content-Type" => "application/json"
 		}
