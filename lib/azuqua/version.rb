@@ -1,3 +1,3 @@
-module Azuqua
+class Azuqua
   VERSION = "0.1.0"
 end

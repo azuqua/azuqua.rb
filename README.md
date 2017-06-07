@@ -1,45 +1,55 @@
-<h1>Azuqua Client Rubygem</h1>
-<p>
-	This library provides an interface for interacting with your Azuqua flos.
-	The Azuqua API is directly exposed to developers should you wish to write your own library.
-	For full API documentation please visit <a href="//developer.azuqua.com">developer.azuqua.com</a>.
-</p>
-<p>
-	Installation:
-	<pre> gem install azuqua </pre>
-</p>
-<p>
-	In order to make API requests you will need your accessKey and accessSecret.
-	These can be found on your account information page. 
-</p>
-<h1>Usage</h1>
-<pre>
-	require "azuqua"
-	
-	# pass in your credentials directly
-	Azuqua.config("accessKey", "accessSecret")
+#Azuqua Client Rubygem
 
-	# or load them from a .json file
-	# see account.json for an example file
-	Azuqua.loadConfig("path/to/file.json")
+This library provides an interface for interacting with your Azuqua flos.
+The Azuqua API is directly exposed to developers should you wish to write your own library.
+For full API documentation please visit <a href="https://api.azuqua.com">api.azuqua.com</a>.
 
-	# get all your flos
-	# note: this caches your flos locally and any subsequent calls to Flo.list will return the cache
-	flos = Azuqua::Flo.list
+Installation:
+```
+gem 'azuqua', :git => 'https://github.com/azuqua/azuqua.rb.git'
+```
 
-	# to refresh the cache provide a truthy first parameter
-	Azuqua::Flo.list(true)
+In order to make API requests you will need your accessKey and accessSecret.
+These can be found on your account information page. 
 
-	# invoke all of them
-	flos.each do |flo|
-		p "Invoking " + flo.name
-		p flo.invoke({ a: 1 })
-	end
+#Usage
 
-</pre>
-<hr>
-<h1>LICENSE - "MIT License"</h1>
-Copyright (c) 2014 Azuqua
+```ruby
+# Load accessKey & accessSecret via environment variables
+# Checks for variables `AZUQUA_ACCESS_KEY` and `AZUQUA_ACCESS_SECRET` respectivly
+azuqua = Azuqua.fromEnv()
+
+#Alternativly to load from a JSON file with { accessKey: '', accessSecret: '' }
+# azuqua = Azuqua.fromConfig([PATH])
+
+# OR - call initialize new azuqua passing in key and secret to constructor
+# azuqua = Azuqua.new([KEY], [SECRET])
+#
+
+#Invoke 
+puts azuqua.invoke('a22cbad4f0f9902fd7dc2e5875a8ee14', { name: 'Ruby' })
+
+#Invoke with GET request (data populates `query`) section of API entpoint Flo
+puts azuqua.invoke('a22cbad4f0f9902fd7dc2e5875a8ee14', { name: 'Ruby' }, 'GET')
+
+#Invoke showing complex Hash in body
+puts azuqua.invoke('a22cbad4f0f9902fd7dc2e5875a8ee14', {
+  :user => {
+    :name => 'Rails'
+  },
+  :org => {
+    :name => 'Ruby'
+  }
+})
+
+#Make an arbitrary request to an Azuqua API endpoint
+puts azuqua.request('/flo/a22cbad4f0f9902fd7dc2e5875a8ee14/read', 'GET', { orgId: 18 })
+
+expect(true).to eq true
+```
+
+#LICENSE - "MIT License"
+Copyright (c) 2017 Azuqua
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
