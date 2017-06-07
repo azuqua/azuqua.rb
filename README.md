@@ -1,4 +1,4 @@
-#Azuqua Client Rubygem
+# Azuqua Client Rubygem
 
 This library provides an interface for interacting with your Azuqua flos.
 The Azuqua API is directly exposed to developers should you wish to write your own library.
@@ -12,7 +12,7 @@ gem 'azuqua', :git => 'https://github.com/azuqua/azuqua.rb.git'
 In order to make API requests you will need your accessKey and accessSecret.
 These can be found on your account information page. 
 
-#Usage
+# Usage
 
 ```ruby
 # Load accessKey & accessSecret via environment variables
@@ -48,7 +48,7 @@ puts azuqua.request('/flo/a22cbad4f0f9902fd7dc2e5875a8ee14/read', 'GET', { orgId
 expect(true).to eq true
 ```
 
-#LICENSE - "MIT License"
+# LICENSE - "MIT License"
 Copyright (c) 2017 Azuqua
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
