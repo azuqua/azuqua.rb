@@ -50,50 +50,69 @@ class Azuqua
     end
   end
 
+  # Invokes an Azuqua Flo
   def invoke(floAlias, data, verb="POST")
     invokeRoute = "/flo/" + floAlias + "/invoke";
     request(invokeRoute, verb, data)
   end
 
+  # Alias for invoke
   def invoke_flo(floAlias, data, verb="POST")
     invoke(floAlias, verb, data)
   end
 
+  def flo_read(floAlias)
+    route = "/flo/" + floAlias + "/read"
+    request(route, "GET", {})
+  end
+
+  # Retrieve the inputs for a Flo
   def flo_inputs(floAlias)
     route = "/flo/" + floAlias + "/inputs"
     request(route, "GET", {})
   end
 
+  # Retrieve the outputs of the first method of a Flo
   def flo_outputs(floAlias)
     route = "/flo/" + floAlias + "/outputs"
     request(route, "GET", {})
   end
 
+  # Enables (turns on) a Flo
   def enable_flo(floAlias)
     route = "/flo/" + floAlias + "/enable"
     request(route, "POST", {})
   end
 
+  # Disables (turns off) a Flo
   def disable_flo(floAlias)
     route = "/flo/" + floAlias + "/disable"
     request(route, "POST", {})
   end
 
+  # Resumes a paused Flo by execution ID
   def resume_flo(floAlias, execution_id, data, verb="POST")
     route = "/flo/" + floAlias + "/resume/" + execution_id
     request(route, verb, data)
   end
 
+  # Retrieves a generated swagger definition for an open HTTP endpoint Flo
   def flo_swagger(floAlias)
     route = "/flo/" + floAlias + "/swaggerDefinition"
     request(route, "GET", {})
   end
 
+  # List all flos a user has access to
+  # Supported keys to filter by inside of data are 'org_id' and 'type'
   def list_flos(data)
     route = "/org/flos"
     request(route, "GET", data)
   end
 
+  # Make an arbitrary request to an Azuqua API endpoint
+  # Path being just the path E.G: '/azuqua/ALIAS/invoke
+  # Verb being the HTTP verb
+  # Data being data passed to the route (GET data in querystring) (Post in body)
   def request(path, verb, data)
     verb = verb.downcase
     # Check data
@@ -142,6 +161,7 @@ class Azuqua
     end
   end
 
+  # Static helper function for generating 'x-api-hash'
   def self.sign_data(secret, path, verb, data, timestamp)
     if (verb == "get" || verb == "delete") && data.empty?
         data = ""
