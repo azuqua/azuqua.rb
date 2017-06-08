@@ -19,7 +19,7 @@ These can be found on your account information page.
 # Checks for variables `AZUQUA_ACCESS_KEY` and `AZUQUA_ACCESS_SECRET` respectivly
 azuqua = Azuqua.from_env()
 
-# Alternativly to load from a JSON file with { accessKey: '', accessSecret: '' }
+# Alternativly to load from a JSON file with { accessKey: "", accessSecret: "" }
 # azuqua = Azuqua.from_config([PATH])
 
 # OR - call initialize new azuqua passing in key and secret to constructor
@@ -27,18 +27,18 @@ azuqua = Azuqua.from_env()
 #
 
 # Invoke 
-puts azuqua.invoke('ALIAS', { name: 'Ruby' })
+puts azuqua.invoke("ALIAS", { name: "Ruby" })
 
 # Invoke with GET request (data populates `query`) section of API entpoint Flo
-puts azuqua.invoke('ALIAS', { name: 'Ruby' }, 'GET')
+puts azuqua.invoke("ALIAS", { name: "Ruby" }, "GET")
 
 # Invoke showing complex Hash in body
-puts azuqua.invoke('ALIAS', {
+puts azuqua.invoke("ALIAS", {
   :user => {
-    :name => 'Rails'
+    :name => "Rails"
   },
   :org => {
-    :name => 'Ruby'
+    :name => "Ruby"
   }
 })
 
@@ -48,23 +48,23 @@ puts azuqua.list_flos({ org_id: my_org })
 # Example of listing and invoking every Flo the user has access to
 flos = azuqua.list_flos({})
 flos.each do |flo|
-  azuqua.invoke(flo['alias'], { example: "data" })
+  azuqua.invoke(flo["alias"], { example: "data" })
 end
 
 # Enable a Flo
-azuqua.enable_flo('ALIAS')
+azuqua.enable_flo("ALIAS")
 
 # Disable a Flo
-azuqua.disable_flo('ALIAS')
+azuqua.disable_flo("ALIAS")
 
 # Read Inputs of a Flo
-puts azuqua.flo_inputs('ALIAS')
+puts azuqua.flo_inputs("ALIAS")
 
 # Read Outputs of a Flo
-puts azuqua.flo_outputs('ALIAS')
+puts azuqua.flo_outputs("ALIAS")
 
 # Make an arbitrary request to an Azuqua API endpoint
-puts azuqua.request('ALIAS', 'GET', { orgId: 18 })
+puts azuqua.request("ALIAS", "GET", { orgId: 18 })
 ```
 
 # LICENSE - "MIT License"
