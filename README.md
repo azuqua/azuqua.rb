@@ -19,20 +19,20 @@ These can be found on your account information page.
 # Checks for variables `AZUQUA_ACCESS_KEY` and `AZUQUA_ACCESS_SECRET` respectivly
 azuqua = Azuqua.from_env()
 
-#Alternativly to load from a JSON file with { accessKey: '', accessSecret: '' }
+# Alternativly to load from a JSON file with { accessKey: '', accessSecret: '' }
 # azuqua = Azuqua.from_config([PATH])
 
 # OR - call initialize new azuqua passing in key and secret to constructor
 # azuqua = Azuqua.new([KEY], [SECRET])
 #
 
-#Invoke 
+# Invoke 
 puts azuqua.invoke('ALIAS', { name: 'Ruby' })
 
-#Invoke with GET request (data populates `query`) section of API entpoint Flo
+# Invoke with GET request (data populates `query`) section of API entpoint Flo
 puts azuqua.invoke('ALIAS', { name: 'Ruby' }, 'GET')
 
-#Invoke showing complex Hash in body
+# Invoke showing complex Hash in body
 puts azuqua.invoke('ALIAS', {
   :user => {
     :name => 'Rails'
@@ -41,6 +41,27 @@ puts azuqua.invoke('ALIAS', {
     :name => 'Ruby'
   }
 })
+
+# Example of listing metadata about flos in your org
+puts azuqua.list_flos({ org_id: my_org })
+
+# Example of listing and invoking every Flo the user has access to
+flos = azuqua.list_flos({})
+flos.each do |flo|
+  azuqua.invoke(flo['alias'], { example: "data" })
+end
+
+# Enable a Flo
+azuqua.enable_flo('ea6d8280bfb553ee765e80236ca07ad2')
+
+# Disable a Flo
+azuqua.disable_flo('ea6d8280bfb553ee765e80236ca07ad2')
+
+# Read Inputs of a Flo
+puts azuqua.flo_inputs('ea6d8280bfb553ee765e80236ca07ad2')
+
+# Read Outputs of a Flo
+puts azuqua.flo_outputs('ea6d8280bfb553ee765e80236ca07ad2')
 
 #Make an arbitrary request to an Azuqua API endpoint
 puts azuqua.request('ALIAS', 'GET', { orgId: 18 })

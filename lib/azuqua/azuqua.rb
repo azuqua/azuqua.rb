@@ -6,6 +6,8 @@ require "net/https"
 require "uri"
 
 class Azuqua
+  VERSION = "1.0.0"
+
 	HTTP_OPTIONS = {
 		:host => "https://api.azuqua.com", 
 		:headers => {
@@ -51,6 +53,45 @@ class Azuqua
   def invoke(floAlias, data, verb="POST")
     invokeRoute = "/flo/" + floAlias + "/invoke";
     request(invokeRoute, verb, data)
+  end
+
+  def invoke_flo(floAlias, data, verb="POST")
+    invoke(floAlias, verb, data)
+  end
+
+  def flo_inputs(floAlias)
+    route = "/flo/" + floAlias + "/inputs"
+    request(route, "GET", {})
+  end
+
+  def flo_outputs(floAlias)
+    route = "/flo/" + floAlias + "/outputs"
+    request(route, "GET", {})
+  end
+
+  def enable_flo(floAlias)
+    route = "/flo/" + floAlias + "/enable"
+    request(route, "POST", {})
+  end
+
+  def disable_flo(floAlias)
+    route = "/flo/" + floAlias + "/disable"
+    request(route, "POST", {})
+  end
+
+  def resume_flo(floAlias, execution_id, data, verb="POST")
+    route = "/flo/" + floAlias + "/resume/" + execution_id
+    request(route, verb, data)
+  end
+
+  def flo_swagger(floAlias)
+    route = "/flo/" + floAlias + "/swaggerDefinition"
+    request(route, "GET", {})
+  end
+
+  def list_flos(data)
+    route = "/org/flos"
+    request(route, "GET", data)
   end
 
   def request(path, verb, data)
