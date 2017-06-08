@@ -52,16 +52,16 @@ flos.each do |flo|
 end
 
 # Enable a Flo
-azuqua.enable_flo('ea6d8280bfb553ee765e80236ca07ad2')
+azuqua.enable_flo('ALIAS')
 
 # Disable a Flo
-azuqua.disable_flo('ea6d8280bfb553ee765e80236ca07ad2')
+azuqua.disable_flo('ALIAS')
 
 # Read Inputs of a Flo
-puts azuqua.flo_inputs('ea6d8280bfb553ee765e80236ca07ad2')
+puts azuqua.flo_inputs('ALIAS')
 
 # Read Outputs of a Flo
-puts azuqua.flo_outputs('ea6d8280bfb553ee765e80236ca07ad2')
+puts azuqua.flo_outputs('ALIAS')
 
 #Make an arbitrary request to an Azuqua API endpoint
 puts azuqua.request('ALIAS', 'GET', { orgId: 18 })
