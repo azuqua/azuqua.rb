@@ -92,7 +92,7 @@ puts azuqua.list_orgs()
 # - execution_id: string execution_id of paused flo
 # - data: hash of data to be sent to resume card
 # - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
-puts azuqua.request("ALIAS", "GET", { orgId: 18 })
+puts azuqua.request("/flo/ALIAS/invoke", "GET", { language: 'ruby' })
 ```
 
 # LICENSE - "MIT License"
