@@ -63,7 +63,7 @@ puts azuqua.flo_inputs('ALIAS')
 # Read Outputs of a Flo
 puts azuqua.flo_outputs('ALIAS')
 
-#Make an arbitrary request to an Azuqua API endpoint
+# Make an arbitrary request to an Azuqua API endpoint
 puts azuqua.request('ALIAS', 'GET', { orgId: 18 })
 ```
 
