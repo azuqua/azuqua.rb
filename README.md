@@ -6,7 +6,7 @@ For full API documentation please visit <a href="https://api.azuqua.com">api.azu
 
 Installation:
 ```
-gem 'azuqua', :git => 'https://github.com/azuqua/azuqua.rb.git'
+gem 'azuqua', :git => 'git@github.com:azuqua/azuqua.rb.git'
 ```
 
 In order to make API requests you will need your accessKey and accessSecret.
