@@ -25,7 +25,11 @@ azuqua = Azuqua.from_env()
 # OR - call initialize new azuqua passing in key and secret to constructor
 # azuqua = Azuqua.new([KEY], [SECRET])
 
-# Invoke 
+# Invokes an Azuqua Flo - returns Flo output as a Hash
+# Params:
+# - flo_alias: string alias of flo that will be invoked
+# - data: Hash containing data to be send in request
+# - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
 puts azuqua.invoke("ALIAS", { name: "Ruby" })
 
 # Invoke with GET request (data populates `query`) section of API entpoint Flo
@@ -41,7 +45,11 @@ puts azuqua.invoke("ALIAS", {
   }
 })
 
-# Example of listing metadata about flos in your org
+# List all flos a user has access to - returns an array of Hashes each representing a Flo
+# Params:
+# - data: Hash of optional query parameters
+# - data.org_id: Filter to flos only in org_id
+# - data.type: Filter to flos only with type
 puts azuqua.list_flos({ org_id: my_org })
 
 # Example of listing and invoking every Flo the user has access to
@@ -50,19 +58,40 @@ flos.each do |flo|
   azuqua.invoke(flo["alias"], { example: "data" })
 end
 
-# Enable a Flo
+# Enables (turns on) a Flo - return response as a Hash
+# Params:
+# - flo_alias: string alias of flo that will be enabled
 azuqua.enable_flo("ALIAS")
 
-# Disable a Flo
+# Disables (turns off) a Flo - returns response as a Hash
+# Params:
+# - flo_alias: string alias of flo that will be disabled
 azuqua.disable_flo("ALIAS")
 
-# Read Inputs of a Flo
+# Retrieve the inputs for a Flo - returns Flo inputs as a Hash
+# Params:
+# - flo_alias: string alias of flo whos inputs will be returned
 puts azuqua.flo_inputs("ALIAS")
 
-# Read Outputs of a Flo
+# Retrieve the outputs of the first method of a Flo - return Flo outputs as a Hash
+# Params:
+# - flo_alias: string alias of flo whos outputs will be returned
 puts azuqua.flo_outputs("ALIAS")
 
-# Make an arbitrary request to an Azuqua API endpoint
+# Reads an Azuqua Flo - return Flo metdata as a Hash
+# Params:
+# - flo_alias: string alias of flo that will be read
+puts azuqua.flo_read("ALIAS")
+
+# List all orgs a user has access to - returns an array of Hashes each representing an Org
+puts azuqua.list_orgs()
+
+# Resumes a paused flo by execution_id - returns Flo response as a Hash
+# Params:
+# - flo_alias: string alias of flo that will be disabled
+# - execution_id: string execution_id of paused flo
+# - data: hash of data to be sent to resume card
+# - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
 puts azuqua.request("ALIAS", "GET", { orgId: 18 })
 ```
 
