@@ -46,7 +46,7 @@ class Azuqua
         :accessSecret => @accessSecret
       }
     else
-      raise "Invalid account credentials"
+      raise "Invalid account credentials. Missing accessKey or accessSecret"
     end
   end
 
