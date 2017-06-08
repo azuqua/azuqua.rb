@@ -24,7 +24,6 @@ azuqua = Azuqua.from_env()
 
 # OR - call initialize new azuqua passing in key and secret to constructor
 # azuqua = Azuqua.new([KEY], [SECRET])
-#
 
 # Invoke 
 puts azuqua.invoke('ALIAS', { name: 'Ruby' })
