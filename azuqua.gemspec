@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path("../lib/azuqua/azuqua", __FILE__)
+require File.expand_path("../lib/azuqua", __FILE__)
 
 Gem::Specification.new do |s|
   s.name         = "azuqua"
@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.files        = `git ls-files`.split("\n")
   s.homepage     = "http://developer.azuqua.com"
   s.license      = "MIT"
-  s.require_path = "lib"
 
   s.post_install_message = "Note: This library requires openssl support"
   s.requirements << "sudo apt-get -y build-essential install openssl zlib1g-dev libreadline-dev libssl-dev libcurl4-openssl-dev"
