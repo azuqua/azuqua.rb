@@ -1,19 +1,24 @@
-# Azuqua Client Rubygem
+Azuqua Ruby client
+=====================
 
-This library provides an interface for interacting with your Azuqua flos.
-The Azuqua API is directly exposed to developers should you wish to write your own library.
-For full API documentation please visit <a href="https://api.azuqua.com">api.azuqua.com</a>.
+[PLACEHOLDER_DESC_HERE]
 
-Installation:
+Requirements
+============
+
+Ruby > 2.4
+
+Install
+=======
+
+Add the gem as a dependency
+
+```ruby
+gem 'azuqua', :git => 'git@github.com:azuqua/azuqua.rb.git', :branch => 'apiV2'
 ```
-gem 'azuqua', :git => 'git@github.com:azuqua/azuqua.rb.git'
-```
 
-In order to make API requests you will need your accessKey and accessSecret.
-These can be found on your account information page. 
-
-# Usage
-
+Usage
+=====
 ```ruby
 # Load accessKey & accessSecret via environment variables
 # Checks for variables `AZUQUA_ACCESS_KEY` and `AZUQUA_ACCESS_SECRET` respectivly
@@ -25,77 +30,139 @@ azuqua = Azuqua.from_env()
 # OR - call initialize new azuqua passing in key and secret to constructor
 # azuqua = Azuqua.new([KEY], [SECRET])
 
-# Invokes an Azuqua Flo - returns Flo output as a Hash
-# Params:
-# - flo_alias: string alias of flo that will be invoked
-# - data: Hash containing data to be send in request
-# - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
-puts azuqua.invoke("ALIAS", { name: "Ruby" })
 
-# Invoke with GET request (data populates `query`) section of API entpoint Flo
-puts azuqua.invoke("ALIAS", { name: "Ruby" }, "GET")
 
-# Invoke showing complex Hash in body
-puts azuqua.invoke("ALIAS", {
-  :user => {
-    :name => "Rails"
-  },
-  :org => {
-    :name => "Ruby"
-  }
-})
+puts(azuqua.read_all_accounts())
 
-# List all flos a user has access to - returns an array of Hashes each representing a Flo
-# Params:
-# - data: Hash of optional query parameters
-# - data.org_id: Filter to flos only in org_id
-# - data.type: Filter to flos only with type
-puts azuqua.list_flos({ org_id: my_org })
 
-# Example of listing and invoking every Flo the user has access to
-flos = azuqua.list_flos({})
-flos.each do |flo|
-  azuqua.invoke(flo["alias"], { example: "data" })
-end
+puts(azuqua.read_account(account_id))
 
-# Enables (turns on) a Flo - return response as a Hash
-# Params:
-# - flo_alias: string alias of flo that will be enabled
-azuqua.enable_flo("ALIAS")
 
-# Disables (turns off) a Flo - returns response as a Hash
-# Params:
-# - flo_alias: string alias of flo that will be disabled
-azuqua.disable_flo("ALIAS")
+puts(azuqua.delete_account(account_id))
 
-# Retrieve the inputs for a Flo - returns Flo inputs as a Hash
-# Params:
-# - flo_alias: string alias of flo whos inputs will be returned
-puts azuqua.flo_inputs("ALIAS")
 
-# Retrieve the outputs of the first method of a Flo - return Flo outputs as a Hash
-# Params:
-# - flo_alias: string alias of flo whos outputs will be returned
-puts azuqua.flo_outputs("ALIAS")
+data = {
+  :role => "NONE"
+}
+puts(azuqua.update_account_user_permissions(account_id, user_id, data))
 
-# Reads an Azuqua Flo - return Flo metdata as a Hash
-# Params:
-# - flo_alias: string alias of flo that will be read
-puts azuqua.flo_read("ALIAS")
 
-# List all orgs a user has access to - returns an array of Hashes each representing an Org
-puts azuqua.list_orgs()
+puts(azuqua.read_connector_version(connector_name, connector_version))
 
-# Resumes a paused flo by execution_id - returns Flo response as a Hash
-# Params:
-# - flo_alias: string alias of flo that will be disabled
-# - execution_id: string execution_id of paused flo
-# - data: hash of data to be sent to resume card
-# - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
-puts azuqua.request("/flo/ALIAS/invoke", "GET", { language: 'ruby' })
+
+puts(azuqua.read_flo(flo_id))
+
+
+data = {
+  :name => "",
+  :description => ""
+}
+puts(azuqua.update_flo(flo_id, data))
+
+
+puts(azuqua.delete_flo(flo_id))
+
+
+puts(azuqua.enable_flo(flo_id))
+
+
+puts(azuqua.disable_flo(flo_id))
+
+
+puts(azuqua.read_flo_inputs(flo_id))
+
+
+puts(azuqua.read_flo_accounts(flo_id))
+
+
+puts(azuqua.move_flo_to_folder(flo_id, folder_id))
+
+
+data = {
+  :configs => "",
+  :inputs => [],
+  :outputs => []
+}
+puts(azuqua.modify_flo(flo_id, data))
+
+
+data = {
+  :folder_id => 0
+}
+puts(azuqua.copy_flo(flo_id, data))
+
+
+data = {
+  :folder_id => 0
+}
+puts(azuqua.copy_flo_to_org(flo_id, org_id, data))
+
+
+puts(azuqua.read_all_folders())
+
+
+data = {
+  :name => "",
+  :description => ""
+}
+puts(azuqua.create_folder(data))
+
+
+puts(azuqua.read_folder(folder_id))
+
+
+data = {
+  :name => "",
+  :description => ""
+}
+puts(azuqua.update_folder(folder_id, data))
+
+
+puts(azuqua.delete_folder(folder_id))
+
+
+puts(azuqua.read_folder_flos(folder_id))
+
+
+puts(azuqua.read_folder_users(folder_id))
+
+
+data = {
+  :role => "NONE"
+}
+puts(azuqua.update_folder_user_permissions(folder_id, user_id, data))
+
+
+puts(azuqua.read_org())
+
+
+data = {
+  :name => "",
+  :display_name => ""
+}
+puts(azuqua.update_org(data))
+
+
+puts(azuqua.read_org_flos())
+
+
+puts(azuqua.read_org_connectors())
+
+
+puts(azuqua.remove_user_from_org(user_id))
+
+
+data = {
+  :role => "MEMBER"
+}
+puts(azuqua.update_org_user_permissions(user_id, data))
+
+
+puts(azuqua.read_user_orgs())
 ```
 
-# LICENSE - "MIT License"
+LICENSE - "MIT License"
+=======================
 Copyright (c) 2017 Azuqua
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

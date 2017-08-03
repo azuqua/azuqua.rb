@@ -6,14 +6,22 @@ require "net/https"
 require "uri"
 
 class Azuqua
-  VERSION = "1.0.0"
+  VERSION = "2.0.0"
 
+	#HTTP_OPTIONS = {
+		#:host => "https://api.azuqua.com", 
+		#:headers => {
+			#"Content-Type" => "application/json"
+		#}
+	#}
 	HTTP_OPTIONS = {
-		:host => "https://api.azuqua.com", 
+		:host => "http://localhost.azuqua.com:6072", 
 		:headers => {
 			"Content-Type" => "application/json"
 		}
 	}
+
+  ROUTES = JSON.parse(File.read(File.join(File.dirname(__FILE__), "/static/routes.json")))
 
   @accessKey = nil
   @accessSecret = nil
@@ -21,6 +29,26 @@ class Azuqua
   def initialize(key, secret)
     @accessKey = key
     @accessSecret = secret
+    ROUTES.each do |routeGroupKey, routeGroup|
+      routeGroup.each do |routeName, route|
+        method = route["methods"][0].upcase
+        path = route["path"]
+        params = path.split("/").select { |part| part.start_with?(':') }
+        self.define_singleton_method(routeName) do |*args|
+          newPath = path;
+          params.each_with_index { |param, idx|
+            newPath.sub!(param, "#{args[idx]}")
+          }
+          data = {};
+          if method == 'POST' || method == 'PUT' && args.length > params.length
+            if args[args.length - 1].is_a?(Hash)
+              data = args[args.length - 1];
+            end
+          end
+          request(newPath, method, data);
+        end
+      end
+    end
     raise "Invalid account credentials" unless @accessKey && @accessSecret
   end
 
@@ -50,93 +78,9 @@ class Azuqua
     end
   end
 
-  # Invokes an Azuqua Flo - returns Flo output as a Hash
-  # Params:
-  # - flo_alias: string alias of flo that will be invoked
-  # - data: Hash containing data to be send in request
-  # - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
-  def invoke(flo_alias, data, verb="POST")
-    invokeRoute = "/flo/" + flo_alias + "/invoke";
-    request(invokeRoute, verb, data)
-  end
-
-  # Alias for invoke
-  def invoke_flo(flo_alias, data, verb="POST")
-    invoke(flo_alias, verb, data)
-  end
-
-  # Reads an Azuqua Flo - return Flo metdata as a Hash
-  # Params:
-  # - flo_alias: string alias of flo that will be read
-  def flo_read(flo_alias)
-    route = "/flo/" + flo_alias + "/read"
-    request(route, "GET", {})
-  end
-
-  # Retrieve the inputs for a Flo - returns Flo inputs as a Hash
-  # Params:
-  # - flo_alias: string alias of flo whos inputs will be returned
-  def flo_inputs(flo_alias)
-    route = "/flo/" + flo_alias + "/inputs"
-    request(route, "GET", {})
-  end
-
-  # Retrieve the outputs of the first method of a Flo - return Flo outputs as a Hash
-  # Params:
-  # - flo_alias: string alias of flo whos outputs will be returned
-  def flo_outputs(flo_alias)
-    route = "/flo/" + flo_alias + "/outputs"
-    request(route, "GET", {})
-  end
-
-  # Enables (turns on) a Flo - return response as a Hash
-  # Params:
-  # - flo_alias: string alias of flo that will be enabled
-  def enable_flo(flo_alias)
-    route = "/flo/" + flo_alias + "/enable"
-    request(route, "POST", {})
-  end
-
-  # Disables (turns off) a Flo - returns response as a Hash
-  # Params:
-  # - flo_alias: string alias of flo that will be disabled
-  def disable_flo(flo_alias)
-    route = "/flo/" + flo_alias + "/disable"
-    request(route, "POST", {})
-  end
-
-  # Resumes a paused flo by execution_id - returns Flo response as a Hash
-  # Params:
-  # - flo_alias: string alias of flo that will be disabled
-  # - execution_id: string execution_id of paused flo
-  # - data: hash of data to be sent to resume card
-  # - verb: string representation of HTTP method (GET, POST, etc) defaults to "POST"
-  def resume_flo(flo_alias, execution_id, data, verb="POST")
-    route = "/flo/" + flo_alias + "/resume/" + execution_id
-    request(route, verb, data)
-  end
-
-  # Retrieves a generated swagger definition for an open HTTP endpoint Flo - returns Swagger Def as a Hash
-  # Params:
-  # - flo_alias: string alias of flo whos swagger will be returned
-  def flo_swagger(flo_alias)
-    route = "/flo/" + flo_alias + "/swaggerDefinition"
-    request(route, "GET", {})
-  end
-
-  # List all flos a user has access to - returns an array of Hashes each representing a Flo
-  # Params:
-  # - data: Hash of optional query parameters
-  # - data.org_id: Filter to flos only in org_id
-  # - data.type: Filter to flos only with type
-  def list_flos(data)
-    route = "/user/flos"
-    request(route, "GET", data)
-  end
-
-  # List all orgs a user has access to - returns an array of Hashes each representing an Org
-  def list_orgs()
-    route = "/user/orgs"
+  # Reads all folders within an org - return an array of folders hashes
+  def read_all_folders()
+    route = "/v2/folders"
     request(route, "GET", {})
   end
 
@@ -157,8 +101,10 @@ class Azuqua
     if (verb == "get" || verb == "delete") && !data.empty?
       querystring = URI.encode_www_form(data)
       # Server will decode QS for data (ints => string) this mimics that for hash
-      data = Hash[URI.decode_www_form(querystring)]
+      # data = Hash[URI.decode_www_form(querystring)]
       path = path + "?" + querystring
+      # Set data to empty - it's now in the query string
+      data = {}
     end
 
     timestamp = Time.now.utc.iso8601
@@ -170,10 +116,15 @@ class Azuqua
 
     uri = URI.parse(HTTP_OPTIONS[:host] + path)
     https = Net::HTTP.new(uri.host, uri.port)
-    https.use_ssl = true
+    #https.use_ssl = true
 
     if verb == "get"
       req = Net::HTTP::Get.new(uri, headers)
+    elsif verb == "delete"
+      req = Net::HTTP::Delete.new(uri, headers)
+    elsif verb == "put"
+      req = Net::HTTP::Put.new(uri, headers)
+      req.body = data.to_json
     else
       req = Net::HTTP::Post.new(uri, headers)
       req.body = data.to_json
@@ -195,9 +146,9 @@ class Azuqua
 
   # Static helper function for generating 'x-api-hash'
   def self.sign_data(secret, path, verb, data, timestamp)
-    if (verb == "get" || verb == "delete") && data.empty?
-        data = ""
-    elsif
+    if data.empty?
+      data = ""
+    else
       data = data.to_json
     end
     meta = [verb.downcase, path, timestamp].join(":") + data
