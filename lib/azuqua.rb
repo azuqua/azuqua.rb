@@ -8,18 +8,12 @@ require "uri"
 class Azuqua
   VERSION = "2.0.0"
 
-	#HTTP_OPTIONS = {
-		#:host => "https://api.azuqua.com", 
-		#:headers => {
-			#"Content-Type" => "application/json"
-		#}
-	#}
-	HTTP_OPTIONS = {
-		:host => "http://localhost.azuqua.com:6072", 
-		:headers => {
-			"Content-Type" => "application/json"
-		}
-	}
+  HTTP_OPTIONS = {
+    :host => "https://api.azuqua.com:443", 
+    :headers => {
+      "Content-Type" => "application/json"
+    }
+  }
 
   ROUTES = JSON.parse(File.read(File.join(File.dirname(__FILE__), "/static/routes.json")))
 
@@ -78,10 +72,18 @@ class Azuqua
     end
   end
 
-  # Reads all folders within an org - return an array of folders hashes
-  def read_all_folders()
-    route = "/v2/folders"
-    request(route, "GET", {})
+  # headers, query, body, files, method
+  def invoke(flo_alias, data)
+    method, headers, query, body, files = data.values_at(:method, :headers, :query, :body, :files)
+    method = method.upcase
+    endpoint = "/v2/flo/#{flo_alias}/invoke"
+    if !query.empty?
+      endpoint = endpoint + "?" + URI.encode_www_form(query)
+    end
+    if method == "GET" || method == "DELETE"
+      body = nil
+    end
+    request(endpoint, method, body, headers)
   end
 
   # Make an arbitrary request to an Azuqua API endpoint
@@ -89,7 +91,7 @@ class Azuqua
   #   - path: string of API path E.G: /flo/ALIAS/invoke
   #   - verb: string representation of HTTP method to use
   #   - data: Hash of data to be sent with request
-  def request(path, verb, data)
+  def request(path, verb, data, additional_headers)
     verb = verb.downcase
     # Check data
     if data.nil?
@@ -114,9 +116,13 @@ class Azuqua
     headers["x-api-hash"] = Azuqua.sign_data(@accessSecret, path, verb, data, timestamp)
     headers["Content-Type"] = "application/json"
 
+    additional_headers.each do |key, value|
+      headers[key] = value
+    end
+
     uri = URI.parse(HTTP_OPTIONS[:host] + path)
     https = Net::HTTP.new(uri.host, uri.port)
-    #https.use_ssl = true
+    https.use_ssl = true
 
     if verb == "get"
       req = Net::HTTP::Get.new(uri, headers)
